@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Language Translator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f0f8ff;
+      padding: 20px;
+      text-align: center;
+    }
+    textarea {
+      width: 90%;
+      height: 100px;
+      margin: 10px 0;
+    }
+    select, button {
+      font-size: 16px;
+      padding: 10px;
+      margin: 10px;
+    }
+    .output {
+      margin-top: 20px;
+      font-size: 18px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Language Translator</h1>
+  <p>Choose a translation mode and enter the text to translate.</p>
+  
+  <label for="translationMode">Translation Mode:</label>
+  <select id="translationMode">
+    <option value="modernToPirate">Modern English to Pirate</option>
+    <option value="pirateToModern">Pirate to Modern English</option>
+    <option value="modernToShakespeare">Modern English to Shakespearean</option>
+    <option value="shakespeareToModern">Shakespearean to Modern English</option>
+  </select><br>
+
+  <textarea id="inputText" placeholder="Enter text here..."></textarea><br>
+  <button onclick="translateText()">Translate</button>
+
+  <div class="output">
+    <h2>Translated Text:</h2>
+    <textarea id="outputText" readonly></textarea>
+  </div>
+
+  <script>
+    // Modern English to Pirate dictionary
+    const modernToPirate = {
+      "hello": "ahoy",
+      "my": "me",
+      "friend": "matey",
+      "is": "be",
+      "are": "be",
+      "yes": "aye",
+      "no": "nay",
+      "treasure": "booty",
+      "stop": "avast",
+      "enemy": "scallywag",
+      "ship": "vessel",
+      "drink": "grog",
+      "gold": "doubloons"
+    };
+
+    // Pirate to Modern English dictionary (reverse of modernToPirate)
+    const pirateToModern = Object.fromEntries(
+      Object.entries(modernToPirate).map(([key, value]) => [value, key])
+    );
+
+    // Modern English to Shakespearean dictionary
+    const modernToShakespeare = {
+      "you": "thou",
+      "are": "art",
+      "have": "hast",
+      "your": "thy",
+      "do": "dost",
+      "before": "ere",
+      "yes": "aye",
+      "no": "nay",
+      "friend": "comrade",
+      "love": "adore",
+      "hello": "hail",
+      "goodbye": "farewell"
+    };
+
+    // Shakespearean to Modern English dictionary (reverse of modernToShakespeare)
+    const shakespeareToModern = Object.fromEntries(
+      Object.entries(modernToShakespeare).map(([key, value]) => [value, key])
+    );
+
+    // Translation function
+    function translateText() {
+  const mode = document.getElementById("translationMode").value;
+  const inputText = document.getElementById("inputText").value;
+  
+  // Split the input text into words using a regex to handle punctuation
+  const words = inputText.split(/\b/); 
+  
+  let translatedWords = [];
+  let dictionary = {};
+
+  // Determine the correct dictionary based on mode
+  if (mode === "modernToPirate") {
+    dictionary = modernToPirate;
+  } else if (mode === "pirateToModern") {
+    dictionary = pirateToModern;
+  } else if (mode === "modernToShakespeare") {
+    dictionary = modernToShakespeare;
+  } else if (mode === "shakespeareToModern") {
+    dictionary = shakespeareToModern;
+  }
+
+  // Translate each word
+  for (let word of words) {
+    // Normalize the word for case-insensitive lookup
+    const normalizedWord = word.toLowerCase();
+    const translatedWord = dictionary[normalizedWord];
+
+    // Preserve original capitalization
+    if (translatedWord) {
+      if (word[0] === word[0].toUpperCase()) {
+        // Capitalize the translated word if the original was capitalized
+        translatedWords.push(translatedWord.charAt(0).toUpperCase() + translatedWord.slice(1));
+      } else {
+        translatedWords.push(translatedWord);
+      }
+    } else {
+      translatedWords.push(word); // If no translation exists, keep the original word
+    }
+  }
+
+  // Join and display the translated text
+  document.getElementById("outputText").value = translatedWords.join("");
+}
+
+  </script>
+</body>
+</html>
+
